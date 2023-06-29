@@ -33,67 +33,94 @@ class APIdata:
 
 
     def DataTOarticle(self):
-        delimitatori = [",", "!", "?"," ","}","{","[","]","\"","\""]
+        delimitatori = [",","!"," ","}","{","[","]","\"","\""]
         cuvinte = delimiteaza_cuvinte(self.data, delimitatori)
         contor = 0
         cuvant_cautat="source"
         Articol="" 
+        nrCuvPerArticol=0
         # Iterăm prin cuvinte
         for index, cuvant in enumerate(cuvinte):
             if cuvant == cuvant_cautat:
-               if contor != 0:
+               urmatorul_cuvant = cuvinte[index + 1]
+               if contor != 0 and urmatorul_cuvant==':':
                   self.vectorArticole.append(Articol.strip())                  
-               contor += 1 
-               Articol=""
+                  contor += 1 
+                  nrCuvPerArticol=0
+                  Articol=""
+               contor+=1   
+            nrCuvPerArticol+=1 
             Articol=Articol+' '+cuvant
-        print(self.nrArticole)
+        self.vectorArticole.append(Articol.strip()) 
+        contor += 1 
+        self.nrArticole=len(self.vectorArticole)
         for articols in self.vectorArticole:
             print(articols)
             print("\n")
 
      
     def ExtractDataArticle(self,Article_string):
-        delimitatori = [",", "!", "?"," ","}","{","[","]","\"","\""]
+        delimitatori = [",","!"," ","}","{","[","]","\"","\""]
         cuvinte = delimiteaza_cuvinte(Article_string, delimitatori)
+        description=id=name2=author=title=url2=urlToImage=publishedAt=""
         ElementArticol=""
         ok=0
-        for word in cuvinte:
+        for i in range (len(cuvinte)-1):
+            word = cuvinte[i]
             ok=0
             if word == "id":
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    ElementArticol=""
+                    ok=1
             if word == "name":
-                id=ElementArticol
-                ok=1
-                ElementArticol=""
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    id=ElementArticol
+                    ok=1
+                    ElementArticol=""
             if word == "author":
-                name2=ElementArticol
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    name2=ElementArticol
+                    ElementArticol=""
+                    ok=1
             if word == "title":
-                author=ElementArticol
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    author=ElementArticol
+                    ElementArticol=""
+                    ok=1
             if word == "description":
-                title=ElementArticol
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    title=ElementArticol
+                    ElementArticol=""
+                    ok=1
             if word == "url":
-                description=ElementArticol
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    description=ElementArticol
+                    ElementArticol=""
+                    ok=1
             if word == "urlToImage":
-                url2=ElementArticol
-                ElementArticol=""
-                ok=1
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    url2=ElementArticol
+                    ElementArticol=""
+                    ok=1
             if word == "publishedAt":
-                urlToImage=ElementArticol
-                ElementArticol=""    
-                ok=1            
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    urlToImage=ElementArticol
+                    ElementArticol=""    
+                    ok=1            
             if word == "content":
-                publishedAt=ElementArticol
-                ElementArticol=""
-                ok=2
+                urmatorul_cuvant = cuvinte[i+1]
+                if urmatorul_cuvant[0] == ":" :
+                    publishedAt=ElementArticol
+                    ElementArticol=""
+                    ok=2
             if ok == 0 and word !=":" :      
                 if word == ":null":
                     word="null"
@@ -111,8 +138,8 @@ class APIdata:
     def CreateCArticol(self):   
         for Articol in self.vectorArticole:
             self.ExtractDataArticle(Articol)
-        #for CArticole in self.Vector_CArticol:
-            #CArticole.PresentArticols()    
+        for CArticole in self.Vector_CArticol:
+            CArticole.PresentArticols()    
 
     def CreateAllYouNeed(self):
         self.DecUrl()
